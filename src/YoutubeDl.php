@@ -200,7 +200,7 @@ class YoutubeDl
             }
         }
 
-        $c .= '--no-playlist --print-json --ignore-config';
+        $c .= '--no-playlist --write-info-json --ignore-config';
 
         return $c;
     }
@@ -450,7 +450,10 @@ class YoutubeDl
      */
     protected function processDownloadOutput($output)
     {
-        $videoData = $this->jsonDecode(trim($output));
+//        $videoData = $this->jsonDecode(trim($output));
+        $jsonOutput = str_replace(['"','%(ext)s'],['','info.json'],$this->options['output']);
+        $jsonOutput = file_get_contents($this->downloadPath.'/'.$jsonOutput);
+        $videoData = $this->jsonDecode(trim($jsonOutput));
 
         if (is_array($videoData)) {
             $downloadPath = $this->downloadPath ?: sys_get_temp_dir();
